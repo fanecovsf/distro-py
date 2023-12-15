@@ -27,7 +27,7 @@ class AvailableModules(APIView):
         return Response(func_list, status=status.HTTP_200_OK)
     
 
-class QueueTask(APIView):
+class QueueTaskView(APIView):
 
 
     def post(self, request):
@@ -47,4 +47,13 @@ class QueueTask(APIView):
             )
         
         return Response(data={'message':'invalid data'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+class CleanQueueView(APIView):
+
+
+    def get(self, request):
+        QUEUE.empty()
+
+        return Response(data={'message':'queue cleaned up'}, status=status.HTTP_200_OK)
 

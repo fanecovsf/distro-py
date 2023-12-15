@@ -1,8 +1,6 @@
 import importlib
 import os
 
-from distro.settings import MODULES_PATH
-
 
 def import_function(module, function):
     try:
