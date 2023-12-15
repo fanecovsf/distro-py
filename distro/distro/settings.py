@@ -1,5 +1,7 @@
 from pathlib import Path
 import os
+from redis import Redis
+from rq import Queue
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,7 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'secreto'
+
+MODULES_PATH = os.path.dirname(os.path.abspath(os.getcwd()))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if int(os.environ.get('DEBUG')) == 1:
@@ -19,17 +23,17 @@ else:
 
 ALLOWED_HOSTS = []
 
-
-# Application definition
+REDIS_URL = 'rediss://red-clu2rjla73kc7398rbn0:HrGmkzsLFmjDcDSLESGUBJrmw0Dv9bgL@ohio-redis.render.com:6379'
+REDIS_CONNECTION = Redis.from_url(REDIS_URL)
+QUEUE = Queue(connection=REDIS_CONNECTION)
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
 ]
 
 INSTALLED_APPS += [
@@ -44,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'distro.urls'
@@ -118,3 +123,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+APPEND_SLASH = False
+
+CORS_ORIGIN_ALLOW_ALL = True
+
