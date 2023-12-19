@@ -21,6 +21,11 @@ if int(os.environ.get('DEBUG')) == 1:
 else:
     DEBUG = False
 
+if int(os.environ.get('TASK_RETRIES')):
+    TASK_RETRIES = int(os.environ.get('TASK_RETRIES'))
+else:
+    TASK_RETRIES = 1
+
 ALLOWED_HOSTS = []
 
 REDIS_URL = 'rediss://red-clu2rjla73kc7398rbn0:HrGmkzsLFmjDcDSLESGUBJrmw0Dv9bgL@ohio-redis.render.com:6379'

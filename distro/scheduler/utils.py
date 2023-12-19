@@ -2,7 +2,7 @@ import importlib
 import os
 
 
-def import_function(module, function):
+def import_function(module=None, function=None):
     try:
         module_path = os.path.abspath(os.path.join('..', 'modules', module + '.py'))
 
