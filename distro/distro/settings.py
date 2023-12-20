@@ -2,10 +2,23 @@ from pathlib import Path
 import os
 from redis import Redis
 from rq import Queue
+import configparser
+
+
+config = configparser.ConfigParser()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+config.read(os.path.dirname(os.path.abspath(BASE_DIR)) + '/config.cfg')
+
+REDIS_URL = config.get('configurations', 'redis_url')
+TASK_RETRIES = int(config.get('configurations', 'task_retries'))
+
+if config.get('configurations', 'modules_path') == 'default':
+    MODULES_PATH = os.path.join(os.path.dirname(os.path.abspath(os.getcwd())), 'modules')
+else:
+    MODULES_PATH = config.get('configurations', 'modules_path')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -13,24 +26,34 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'secreto'
 
-MODULES_PATH = os.path.dirname(os.path.abspath(os.getcwd()))
-
 # SECURITY WARNING: don't run with debug turned on in production!
 if int(os.environ.get('DEBUG')) == 1:
     DEBUG = True
+    database_cfg = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 else:
     DEBUG = False
+    database_cfg = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME', 'distro_db'),
+        'USER': os.getenv('DB_USER', 'distro_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'distropy'),
+        'HOST': os.getenv('DB_HOST', 'postgres'),
+        'PORT': os.getenv('DB_PORT', '5432'),
+    }
+    REDIS_URL = 'redis://redis:6379/1'
 
-if int(os.environ.get('TASK_RETRIES')):
-    TASK_RETRIES = int(os.environ.get('TASK_RETRIES'))
-else:
-    TASK_RETRIES = 1
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
-REDIS_URL = 'rediss://red-clu2rjla73kc7398rbn0:HrGmkzsLFmjDcDSLESGUBJrmw0Dv9bgL@ohio-redis.render.com:6379'
 REDIS_CONNECTION = Redis.from_url(REDIS_URL)
-QUEUE = Queue(connection=REDIS_CONNECTION)
+
+
+DEFAULT_QUEUE = Queue(name='default', connection=REDIS_CONNECTION)
+LOW_QUEUE = Queue(name='low', connection=REDIS_CONNECTION)
+HIGH_QUEUE = Queue(name='high', connection=REDIS_CONNECTION)
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -81,10 +104,7 @@ WSGI_APPLICATION = 'distro.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': database_cfg
 }
 
 

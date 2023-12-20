@@ -1,6 +1,8 @@
 import importlib
 import os
 
+from distro.settings import LOW_QUEUE, HIGH_QUEUE, DEFAULT_QUEUE
+
 
 def import_function(module=None, function=None):
     try:
@@ -18,3 +20,15 @@ def import_function(module=None, function=None):
         return None
 
     return func
+
+def define_queue(name='default'):
+    if name == 'default':
+        queue = DEFAULT_QUEUE
+
+    if name == 'low':
+        queue = LOW_QUEUE
+
+    if name == 'high':
+        queue = HIGH_QUEUE
+
+    return queue

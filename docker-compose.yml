@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: distro/Dockerfile
+    ports:
+      - "7000:8000"
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - DJANGO_SETTINGS_MODULE=distro.settings
+      - DEBUG=0
+    command: gunicorn --bind 0.0.0.0:8000 distro.wsgi:application -w 4
+
+  redis:
+    image: redis:latest
+
+  rq-dashboard:
+    build:
+      context: .
+      dockerfile: distro/Dockerfile
+    ports:
+      - "9181:9181"
+    depends_on:
+      - redis
+    command: rq-dashboard -u redis://redis:6379/1
