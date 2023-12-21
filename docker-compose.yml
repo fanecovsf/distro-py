@@ -30,4 +30,4 @@ services:
       - "9181:9181"
     depends_on:
       - redis
-    command: rq-dashboard -u redis://redis:6379/1
+    command: rq-dashboard -u redis://host.docker.internal:6379
