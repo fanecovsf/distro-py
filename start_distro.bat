@@ -1,27 +1,24 @@
 @echo off
 
-echo Stopping the application...
-docker-compose -f docker-compose.yml stop web > NUL
-docker-compose -f docker-compose.yml stop rq-dashboard > NUL
-docker-compose -f docker-compose.yml stop redis > NUL
+set /p confirm=Do you want to delete the old version and start the application? (yes/no): 
 
-echo Pulling...
-git pull
+if /i "%confirm%"=="yes" (
+    echo Deleting old version...
+    docker-compose down -v > NUL
 
-echo Deleting old images...
-docker image prune -a
+    echo Starting application...
+    docker-compose -f docker-compose.yml up -d --build > NUL
+    echo Application started successfully.
 
-echo Rebuilding the image...
-docker-compose -f docker-compose.yml up -d --no-deps --build web > NUL
-docker-compose -f docker-compose.yml up -d --no-deps --build rq-dashboard > NUL
-docker-compose -f docker-compose.yml up -d --no-deps --build redis > NUL
+    echo Waiting 20 seconds to do the migrations...
+    timeout /t 20 /nobreak
 
-echo Waiting 20 seconds to do the migrations...
-timeout /t 20 /nobreak
+    docker-compose -f docker-compose.yml exec web python manage.py migrate --noinput > NUL
+    echo Migrations applied.
 
-docker-compose -f docker-compose.yml exec web python manage.py migrate --noinput > NUL
-echo Migrations applied.
-
-echo Update finished, the application is running!
+    echo Finished, application should be running!
+) else (
+    echo Operation canceled.
+)
 
 pause
