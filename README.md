@@ -17,7 +17,7 @@ Documentação de utilização do orquestrador de automações para Python
 Na pasta raiz do projeto temos que configurar o arquivo chamado *config.cfg* com as seguintes variáveis:
 
 - task_retries: **Quantidade de vezes que um job irá repetir em caso de falha**
-- modules_path: **Caminho completo para a pasta com seus arquivos python**
+- modules_path: **Nome da pasta principal que você alocará suas automações/scripts**
 - postgre_url: **URL de conexão com o postgres**
 
 ### Orquestrador
