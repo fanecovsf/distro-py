@@ -71,6 +71,12 @@ Podemos também passar múltiplas filas, por exemplo, se eu inicio um worker par
 rq worker --with-scheduler --url {redis_url} low default
 ```
 
+Podemos nomear os workers para melhor identificação no RQ Dashboard, por exemplo, se eu quiser nomear meu worker de "servidor02" meu comando ficaria:
+
+```
+rq worker --with-scheduler --url {redis_url} --name servidor02 low default
+```
+
 Seguindo os passos acima, já temos nosso worker funcionando e aguardando as tarefas serem agendadas pelo orquestrador principal.
 
 **Nota: lembre-se que o orquestrador principal deve ter acesso a pasta com as mesmas automações/scripts que os workers, conforme configuramos o modules_path no início do orquestrador**
