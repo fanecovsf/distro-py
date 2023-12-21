@@ -37,7 +37,7 @@ if int(os.environ.get('DEBUG')) == 1:
 else:
     DEBUG = False
     database_cfg = dj_database_url.parse(config.get('configurations', 'postgre_url'))
-    REDIS_URL = 'redis://host.docker.internal:6379/1'
+    REDIS_URL = 'redis://redis:6379'
 
 
 ALLOWED_HOSTS = ['*']
