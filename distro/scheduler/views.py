@@ -17,8 +17,8 @@ class AvailableModules(APIView):
 
     def get(self, request):
         func_list = []
-        print(MODULES_PATH)
-        for file in os.listdir(MODULES_PATH):
+        modules_path = os.path.join('/app/repo/modules/', MODULES_PATH)
+        for file in os.listdir(modules_path):
             if file.endswith('.py') and '__init__' not in file:
                 data = {
                     "module": file.split('.')[0]
