@@ -3,6 +3,7 @@ import os
 from redis import Redis
 from rq import Queue
 import configparser
+import dj_database_url
 
 
 config = configparser.ConfigParser()
@@ -12,7 +13,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 config.read(os.path.dirname(os.path.abspath(BASE_DIR)) + '/config.cfg')
 
-REDIS_URL = config.get('configurations', 'redis_url')
 TASK_RETRIES = int(config.get('configurations', 'task_retries'))
 
 if config.get('configurations', 'modules_path') == 'default':
@@ -29,20 +29,14 @@ SECRET_KEY = 'secreto'
 # SECURITY WARNING: don't run with debug turned on in production!
 if int(os.environ.get('DEBUG')) == 1:
     DEBUG = True
+    REDIS_URL = 'rediss://red-clu2rjla73kc7398rbn0:HrGmkzsLFmjDcDSLESGUBJrmw0Dv9bgL@ohio-redis.render.com:6379'
     database_cfg = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 else:
     DEBUG = False
-    database_cfg = {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'distro_db'),
-        'USER': os.getenv('DB_USER', 'distro_user'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'distropy'),
-        'HOST': os.getenv('DB_HOST', 'postgres'),
-        'PORT': os.getenv('DB_PORT', '5432'),
-    }
+    database_cfg = dj_database_url.parse(config.get('configurations', 'postgre_url'))
     REDIS_URL = 'redis://redis:6379/1'
 
 

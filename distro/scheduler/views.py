@@ -88,5 +88,5 @@ class CleanQueueView(APIView):
     def get(self, request):
         DEFAULT_QUEUE.empty()
 
-        return Response(data={'message':'queue cleaned up'}, status=status.HTTP_201_CREATED)
+        return Response(data={'message':'queue cleaned up'}, status=status.HTTP_200_OK)
 

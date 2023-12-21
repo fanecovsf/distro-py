@@ -8,7 +8,6 @@ services:
     ports:
       - "7000:8000"
     depends_on:
-      - postgres
       - redis
     environment:
       - DJANGO_SETTINGS_MODULE=distro.settings
@@ -17,6 +16,9 @@ services:
 
   redis:
     image: redis:latest
+    ports:
+      - "6379:6379"
+    command: redis-server --bind 0.0.0.0
 
   rq-dashboard:
     build:
