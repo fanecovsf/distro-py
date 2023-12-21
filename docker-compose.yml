@@ -14,7 +14,7 @@ services:
       - DEBUG=0
     command: gunicorn --bind 0.0.0.0:8000 distro.wsgi:application -w 4
     volumes:
-      - modules:/app/repo/modules
+      - D:\Moby\Volumes\modules:/app/repo/modules
 
   redis:
     image: redis:latest
@@ -31,6 +31,3 @@ services:
     depends_on:
       - redis
     command: rq-dashboard -u redis://redis:6379/1
-
-volumes:
-  modules:
