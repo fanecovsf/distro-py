@@ -19,7 +19,7 @@ docker-compose -f docker-compose.yml up -d --no-deps --build redis > NUL
 echo Waiting 20 seconds to do the migrations...
 timeout /t 20 /nobreak
 
-docker-compose -f docker-compose.prod.yml exec web python manage.py migrate --noinput > NUL
+docker-compose -f docker-compose.yml exec web python manage.py migrate --noinput > NUL
 echo Migrations applied.
 
 echo Update finished, the application is running!
